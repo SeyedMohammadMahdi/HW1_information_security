@@ -2,6 +2,7 @@ import socket
 from threading import Thread
 from symmetric import *
 from asymmetric import *
+from hash import *
 
 pkey = ""
 
