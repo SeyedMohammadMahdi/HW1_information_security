@@ -13,9 +13,9 @@ def exchange_key():
     sct.connect((host, port))
     pkey = u_key.save_pkcs1()
     sct.send(pkey)
-    data = sct.recv(1024)
-    data = decrypt(data, r_key)
-    skey = data.encode("utf-8")
+    # data = sct.recv(1024)
+    # data = decrypt(data, r_key)
+    # skey = data.encode("utf-8")
     sct.close()
 
 exchange_key()
@@ -29,9 +29,11 @@ def receive():
     while(True):
         conn, addr = server.accept()
         data = conn.recv(1024)
-        print(data.decode("utf-8"))
+        sdata = decode(data, key)
+        print("symmetric " + sdata)
         conn.close()
-        if(data.decode() == "close"):
+        if(sdata == "close"):
+            print("yes")
             server.close()
             break
 
@@ -43,7 +45,8 @@ def send():
         try:
             sct.connect((host, port))
             data = input()
-            sct.send(data.encode("utf-8"))
+            edata = encode(data, key)
+            sct.send(edata)
             sct.close()
             if(data == "close"):
                 return

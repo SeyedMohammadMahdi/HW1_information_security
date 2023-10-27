@@ -16,8 +16,8 @@ def exchange_key():
     data = conn.recv(1024)
     pkey = data
     pkey = rsa.PublicKey.load_pkcs1(pkey)
-    data = encrypt(key.decode("utf-8"), pkey)
-    conn.send(data)
+    # data = encrypt(key.decode("utf-8"), pkey)
+    # conn.send(data)
     conn.close()
     server.close()
 
@@ -32,9 +32,10 @@ def receive():
     while(True):
         conn, addr = server.accept()
         data = conn.recv(1024)
-        print(data.decode("utf-8"))
+        sdata = decode(data, key)
+        print("symmetric " + sdata)
         conn.close()
-        if(data.decode() == "close"):
+        if(sdata == "close"):
             server.close()
             break
 
@@ -46,7 +47,8 @@ def send():
         try:
             sct.connect((host, port))
             data = input()
-            sct.send(data.encode("utf-8"))
+            edata = encode(data, key)
+            sct.send(edata)
             sct.close()
             if(data == "close"):
                 return
