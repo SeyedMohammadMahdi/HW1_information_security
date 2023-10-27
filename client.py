@@ -1,5 +1,23 @@
 import socket 
 from threading import Thread
+from symmetric import *
+from asymmetric import *
+
+skey = ""
+
+def exchange_key():
+    host = "localhost"
+    port = 1236
+    sct  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sct.connect((host, port))
+    pkey = u_key.save_pkcs1()
+    sct.send(pkey)
+    data = sct.recv(1024)
+    data = decrypt(data, r_key)
+    skey = data.encode("utf-8")
+    sct.close()
+
+exchange_key()
 
 def receive():
     host = "localhost"

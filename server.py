@@ -1,20 +1,26 @@
 import socket
 from threading import Thread
-# server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+from symmetric import *
+from asymmetric import *
 
-# host = "localhost"
-# port = 1234
+pkey = ""
 
-# server.bind((host, port))
+def exchange_key():
+    host = "localhost"
+    port = 1236
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((host, port))
+    server.listen(1)
+    conn, addr = server.accept()
+    data = conn.recv(1024)
+    pkey = data
+    pkey = rsa.PublicKey.load_pkcs1(pkey)
+    data = encrypt(key.decode("utf-8"), pkey)
+    conn.send(data)
+    conn.close()
+    server.close()
 
-# server.listen(1)
-
-# conn, addr = server.accept()
-
-# data = conn.recv(1024)
-# print(data.decode())
-
-# server.close()
+exchange_key()
 
 def receive():
     host = "localhost"
