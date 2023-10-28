@@ -2,7 +2,7 @@ import socket
 from threading import Thread
 from symmetric import *
 from asymmetric import *
-import hash
+from hash import *
 
 
 def exchange_key():
@@ -36,6 +36,7 @@ def receive():
         data2 = conn.recv(1024)
         data2 = decode(data2, key)
         print(data2)
+        print(validator(data2, data))
         conn.close()
         if(data2 == "close"):
             server.close()

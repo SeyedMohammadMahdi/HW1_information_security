@@ -2,7 +2,7 @@ import socket
 from threading import Thread
 from symmetric import *
 from asymmetric import *
-import hash
+from hash import *
 
 def exchange_key():
     host = "localhost"
@@ -48,7 +48,7 @@ def send():
         try:
             sct.connect((host, port))
             data = input()
-            edata = encrypt(data, pkey)
+            edata = encrypt(hashing(data), pkey)
             sct.send(edata)
 
             edata = encode(data, key)
