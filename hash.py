@@ -15,3 +15,22 @@ def validator(data, hashed):
         return True
     else:
         return False
+
+def hashing(data):
+     # convertin data to bytes
+    bdata = data.encode("utf-8")
+    # creating hasher object
+    hasher = hashlib.sha256()
+    # hashing data
+    hasher.update(bdata)
+    # getting the hashed data in hexadecimal representation
+    newhash = hasher.hexdigest()
+
+    return newhash
+
+if __name__ == "__main__":
+    data = "hey"
+    h = hashing(data)
+    h = hashing(h)
+    print(validator(data, h))
+    print(h)

@@ -2,9 +2,7 @@ import socket
 from threading import Thread
 from symmetric import *
 from asymmetric import *
-from hash import *
-
-pkey = ""
+import hash
 
 def exchange_key():
     host = "localhost"
@@ -16,12 +14,15 @@ def exchange_key():
     data = conn.recv(1024)
     pkey = data
     pkey = rsa.PublicKey.load_pkcs1(pkey)
-    # data = encrypt(key.decode("utf-8"), pkey)
-    # conn.send(data)
+    data = encrypt(key.decode("utf-8"), pkey)
+    conn.send(data)
     conn.close()
     server.close()
+    return pkey
 
-exchange_key()
+pkey = exchange_key()
+
+
 
 def receive():
     host = "localhost"
@@ -32,10 +33,10 @@ def receive():
     while(True):
         conn, addr = server.accept()
         data = conn.recv(1024)
-        sdata = decode(data, key)
-        print("symmetric " + sdata)
+        data = decode(data, key)
+        print(data)
         conn.close()
-        if(sdata == "close"):
+        if(data == "close"):
             server.close()
             break
 
@@ -47,6 +48,9 @@ def send():
         try:
             sct.connect((host, port))
             data = input()
+            edata = encrypt(data, pkey)
+            sct.send(edata)
+
             edata = encode(data, key)
             sct.send(edata)
             sct.close()

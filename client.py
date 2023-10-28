@@ -2,9 +2,8 @@ import socket
 from threading import Thread
 from symmetric import *
 from asymmetric import *
-from hash import *
+import hash
 
-skey = ""
 
 def exchange_key():
     host = "localhost"
@@ -13,13 +12,15 @@ def exchange_key():
     sct.connect((host, port))
     pkey = u_key.save_pkcs1()
     sct.send(pkey)
-    # data = sct.recv(1024)
-    # data = decrypt(data, r_key)
-    # skey = data.encode("utf-8")
+    data = sct.recv(1024)
+    data = decrypt(data, r_key)
+    skey = data.encode("utf-8")
     sct.close()
+    return skey
+    
+key = exchange_key()
 
-exchange_key()
-
+# print(skey)
 def receive():
     host = "localhost"
     port = 1235
@@ -29,11 +30,14 @@ def receive():
     while(True):
         conn, addr = server.accept()
         data = conn.recv(1024)
-        sdata = decode(data, key)
-        print("symmetric " + sdata)
+        data = decrypt(data, r_key)
+        print(data)
+
+        data2 = conn.recv(1024)
+        data2 = decode(data2, key)
+        print(data2)
         conn.close()
-        if(sdata == "close"):
-            print("yes")
+        if(data2 == "close"):
             server.close()
             break
 
