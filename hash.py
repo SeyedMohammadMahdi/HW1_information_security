@@ -1,3 +1,9 @@
+"""
+AUTHORS: 
+1- Mohammad Reza momenei
+2- Seyed Mohammad Mahdi Niknam Bagheri
+"""
+
 import hashlib
 
 def validator(data, hashed):
